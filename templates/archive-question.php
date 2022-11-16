@@ -1,15 +1,7 @@
-<?php
-/**
- * The template for displaying question archive pages
- *
- * @package DW Question & Answer
- * @since DW Question & Answer 1.4.3
- */
-?>
 <div class="dwqa-questions-archive">
 	<?php do_action( 'dwqa_before_questions_archive' ) ?>
 
-		<div class="dwqa-questions-list">
+		<div class="dwqa-questions-list<?php global $dwqa_general_settings; if ( isset( $dwqa_general_settings['show-status-icon'] ) && $dwqa_general_settings['show-status-icon'] && dwqa_is_enable_status() ) { ?> beqa-questions-list<?php } ?>">
 		<?php do_action( 'dwqa_before_questions_list' ) ?>
 		<?php if ( dwqa_has_question() ) : ?>
 			<?php while ( dwqa_has_question() ) : dwqa_the_question(); ?>
@@ -24,8 +16,12 @@
 		</div>
 		<div class="dwqa-questions-footer">
 			<?php dwqa_question_paginate_link() ?>
-			<?php if ( dwqa_current_user_can( 'post_question' ) ) : ?>
-				<div class="dwqa-ask-question"><a href="<?php echo dwqa_get_ask_link(); ?>"><?php _e( 'Ask Question', 'dw-question-answer' ); ?></a></div>
+                        <?php if ( !is_user_logged_in() ): ?>
+                          <div class="dwqa-ask-question"><a href="https://coding3min.com/wp-login.php" >登陆后提问</a></div>
+                        <?php else : ?>
+			    <?php if ( dwqa_current_user_can( 'post_question' ) ) : ?>
+				<div class="dwqa-ask-question"><a href="<?php echo dwqa_get_ask_link(); ?>"><?php _e( 'Ask Question', 'be-question-answer' ); ?></a></div>
+		    	    <?php endif; ?>
 			<?php endif; ?>
 		</div>
 

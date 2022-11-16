@@ -1,32 +1,27 @@
-<?php  
-/**
- * Generate html for metabox of question status meta data
- * @param  object $post Post Object
- * @return void       
- */
+<?php 
 function dwqa_question_status_box_html( $post ){
 		$meta = get_post_meta( $post->ID, '_dwqa_status', true );
 		$meta = $meta ? $meta : 'open';
 	?>
 	<p>
 		<label for="dwqa-question-status">
-			<?php _e( 'Status','dw-question-answer' ) ?><br>&nbsp;
+			<?php _e( 'Status','be-question-answer' ) ?><br>&nbsp;
 			<select name="dwqa-question-status" id="dwqa-question-status" class="widefat">
-				<option <?php selected( $meta, 'open' ); ?> value="open"><?php _e( 'Open','dw-question-answer' ) ?></option>
-				<option <?php selected( $meta, 'pending' ); ?> value="pending"><?php _e( 'Pending','dw-question-answer' ) ?></option>
-				<option <?php selected( $meta, 'resolved' ); ?> value="resolved"><?php _e( 'Resolved','dw-question-answer' ) ?></option>
-				<option <?php selected( $meta, 're-open' ); ?> value="re-open"><?php _e( 'Re-Open','dw-question-answer' ) ?></option>
-				<option <?php selected( $meta, 'closed' ); ?> value="closed"><?php _e( 'Closed','dw-question-answer' ) ?></option>
+				<option <?php selected( $meta, 'open' ); ?> value="open"><?php _e( 'Open','be-question-answer' ) ?></option>
+				<option <?php selected( $meta, 'pending' ); ?> value="pending"><?php _e( 'Pending','be-question-answer' ) ?></option>
+				<option <?php selected( $meta, 'resolved' ); ?> value="resolved"><?php _e( 'Resolved','be-question-answer' ) ?></option>
+				<option <?php selected( $meta, 're-open' ); ?> value="re-open"><?php _e( 'Re-Open','be-question-answer' ) ?></option>
+				<option <?php selected( $meta, 'closed' ); ?> value="closed"><?php _e( 'Closed','be-question-answer' ) ?></option>
 			</select>
 		</label>
 	</p>    
 	<p>
 		<label for="dwqa-question-sticky">
-			<?php _e( 'Sticky','dw-question-answer' ); ?><br><br>&nbsp;
+			<?php _e( 'Sticky','be-question-answer' ); ?><br><br>&nbsp;
 			<?php
 				$sticky_questions = get_option( 'dwqa_sticky_questions', array() );
 			?>
-			<input <?php checked( true, in_array( $post->ID, $sticky_questions ), true ); ?> type="checkbox" name="dwqa-question-sticky" id="dwqa-question-sticky" value="1" ><span class="description"><?php _e( 'Pin question to top of archive page.','dw-question-answer' ); ?></span>
+			<input <?php checked( true, in_array( $post->ID, $sticky_questions ), true ); ?> type="checkbox" name="dwqa-question-sticky" id="dwqa-question-sticky" value="1" ><span class="description"><?php _e( 'Pin question to top of archive page.','be-question-answer' ); ?></span>
 		</label>
 	</p>
 	<?php
@@ -42,7 +37,7 @@ class DWQA_Metaboxes {
 
 	//Add a metabox that was used for display list of answers of a questions
 	public function answers_metabox(){
-		add_meta_box( 'dwqa-answers', __( 'Answers','dw-question-answer' ), array( $this, 'metabox_answers_list' ), 'dwqa-question' );
+		add_meta_box( 'dwqa-answers', __( 'Answers','be-question-answer' ), array( $this, 'metabox_answers_list' ), 'dwqa-question' );
 	}
 
 	/**
@@ -62,7 +57,7 @@ class DWQA_Metaboxes {
 	 * @return void
 	 */
 	public function add_status_metabox(){
-		add_meta_box( 'dwqa-post-status', __( 'Question Meta Data','dw-question-answer' ), 'dwqa_question_status_box_html', 'dwqa-question', 'side', 'high' );
+		add_meta_box( 'dwqa-post-status', __( 'Question Meta Data','be-question-answer' ), 'dwqa_question_status_box_html', 'dwqa-question', 'side', 'high' );
 	}
 
 	public function question_status_save( $post_id ){

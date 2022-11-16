@@ -7,13 +7,13 @@
                 if( selected_text ) {
                     tinyMCE.activeEditor.execCommand( 'mceInsertContent', false, '<pre>'+selected_text+'</pre>' );
                 }else{
-                    tinyMCE.activeEditor.execCommand( 'mceInsertContent', false, '<pre>Start your code here</pre>' );
+                    tinyMCE.activeEditor.execCommand( 'mceInsertContent', false, '<pre>插入代码</pre>' );
                 }
             });
 
             // Register example button
             ed.addButton('dwqaCodeEmbed', {
-                    title : 'Start insert coding here. Use shift+enter to breakline inside code area',
+                    title : '插入代码（shift+enter）',
                     cmd : 'dwqaCodeEmbedCommand',
                     image : false,
                     icon: 'code'

@@ -1,19 +1,15 @@
 <?php
 /**
- *  Plugin Name: DW Question Answer
- *  Description: A WordPress plugin was make by DesignWall.com to build an Question Answer system for support, asking and comunitcate with your customer
- *  Author: DesignWall
- *  Author URI: http://www.designwall.com
- *  Version: 1.5.7
- *  Text Domain: dw-question-answer
- *  @since 1.4.0
+ *  Plugin Name: 问答系统
+ *  Description: 用于构建一个问答系统，方便您与客户沟通。
+ *  Author: DesignWall | robin
+ *  Author URI: https://zmingcx.com/docs/11780.html
+ *  Version: 2022.06.19
  */
 
 if ( !class_exists( 'DW_Question_Answer' ) ) :
 
 class DW_Question_Answer {
-	private $last_update = 180720161357; //last update time of the plugin
-
 	public function __construct() {
 		$this->define_constants();
 		$this->includes();
@@ -25,14 +21,11 @@ class DW_Question_Answer {
 		$this->stylesheet_dir = DWQA_STYLESHEET_DIR;
 		$this->stylesheet_uri = DWQA_STYLESHEET_URL;
 
-		$this->version = '1.5.7';
-
 		// load posttype
 		$this->question = new DWQA_Posts_Question();
 		$this->answer = new DWQA_Posts_Answer();
 		$this->comment = new DWQA_Posts_Comment();
 		$this->ajax = new DWQA_Ajax();
-		$this->handle = new DWQA_Handle();
 		$this->permission = new DWQA_Permission();
 		$this->status = new DWQA_Status();
 		$this->shortcode = new DWQA_Shortcode();
@@ -40,9 +33,9 @@ class DW_Question_Answer {
 		$this->settings = new DWQA_Settings();
 		$this->editor = new DWQA_Editor();
 		$this->user = new DWQA_User();
-		$this->notifications = new DWQA_Notifications();
+                $this->notifications = new DWQA_Notifications();
+                $this->handle = new DWQA_Handle();
 		
-		$this->akismet = new DWQA_Akismet();
 		$this->autoclosure = new DWQA_Autoclosure();
 		
 		$this->filter = new DWQA_Filter();
@@ -50,29 +43,14 @@ class DW_Question_Answer {
 
 		$this->metaboxes = new DWQA_Metaboxes();
 
-		$this->helptab = new DWQA_Helptab();
-		$this->pointer_helper = new DWQA_PointerHelper();
-
-		new DWQA_Admin_Extensions();
-		new DWQA_Admin_Welcome();
+		// new DWQA_Admin_Welcome();
 
 		// All init action of plugin will be included in
 		add_action( 'init', array( $this, 'init' ) );
 		add_action( 'widgets_init', array( $this, 'widgets_init' ) );
-		add_filter( 'plugin_action_links', array( $this, 'go_pro' ), 10, 2 );
-		add_filter( 'plugin_row_meta', array( $this, 'plugin_rows_meta' ), 10, 2 );
+		add_filter( 'plugin_action_links', array( $this, 'settings_url' ), 10, 2 );
 		register_activation_hook( __FILE__, array( $this, 'activate_hook' ) );
 		register_deactivation_hook( __FILE__, array( $this, 'deactivate_hook' ) );
-		
-		add_action( 'bp_include', array($this,'dwqa_setup_buddypress'), 10 );
-	}
-	
-	public function dwqa_setup_buddypress(){
-		// Include the BuddyPress Component
-		require( DWQA_DIR . 'inc/extend/buddypress/loader.php' );
-		
-		// Instantiate BuddyPress for bbPress
-		$this->DWQA_Buddypress = new DWQA_QA_Component();	
 	}
 
 	public static function instance() {
@@ -87,12 +65,10 @@ class DW_Question_Answer {
 
 	public function includes() {
 		require_once DWQA_DIR . 'inc/autoload.php';
-		require_once DWQA_DIR . 'inc/helper/functions.php';
-		//require_once DWQA_DIR . 'upgrades/upgrades.php';
+		require_once DWQA_DIR . 'inc/functions.php';
 		require_once DWQA_DIR . 'inc/deprecated.php';
-		require_once DWQA_DIR . 'inc/helper/plugin-compatibility.php';
-		require_once DWQA_DIR . 'inc/helper/theme-compatibility.php';
-
+		require_once DWQA_DIR . 'inc/be-dw-breadcrumb.php';
+                require_once DWQA_DIR . 'inc/Notifications.php';
 		require_once DWQA_DIR . 'inc/widgets/Closed_Question.php';
 		require_once DWQA_DIR . 'inc/widgets/Latest_Question.php';
 		require_once DWQA_DIR . 'inc/widgets/Popular_Question.php';
@@ -134,15 +110,8 @@ class DW_Question_Answer {
 
 		$active_template = $this->template->get_template();
 		//Load translate text domain
-		// load_plugin_textdomain( 'dw-question-answer', false,  plugin_basename( dirname( __FILE__ ) )  . '/languages' );
-		// load_plugin_textdomain( 'dw-question-answer');
+		load_plugin_textdomain( 'be-question-answer', false,  plugin_basename( dirname( __FILE__ ) )  . '/languages' );
 
-		$locale = get_locale();
-		$mo = 'dw-question-answer-' . $locale . '.mo';
-		
-		load_textdomain( 'dw-question-answer', WP_LANG_DIR . '/dw-question-answer/' . $mo );
-		load_textdomain( 'dw-question-answer', plugin_dir_path( __FILE__ ) . 'languages/' . $mo );
-		load_plugin_textdomain( 'dw-question-answer' );
 
 		//Scripts var
 
@@ -167,7 +136,7 @@ class DW_Question_Answer {
 
 		if ( ! isset( $options['pages']['archive-question'] ) || ( isset( $options['pages']['archive-question'] ) && ! get_post( $options['pages']['archive-question'] ) ) ) {
 			$args = array(
-				'post_title' => __( 'DWQA Questions', 'dw-question-answer' ),
+				'post_title' => __( 'DWQA Questions', 'be-question-answer' ),
 				'post_type' => 'page',
 				'post_status' => 'publish',
 				'post_content'  => '[dwqa-list-questions]',
@@ -184,7 +153,7 @@ class DW_Question_Answer {
 		if ( ! isset( $options['pages']['submit-question'] ) || ( isset( $options['pages']['submit-question'] ) && ! get_post( $options['pages']['submit-question'] ) ) ) {
 
 			$args = array(
-				'post_title' => __( 'DWQA Ask Question', 'dw-question-answer' ),
+				'post_title' => __( 'DWQA Ask Question', 'be-question-answer' ),
 				'post_type' => 'page',
 				'post_status' => 'publish',
 				'post_content'  => '[dwqa-submit-question-form]',
@@ -241,30 +210,13 @@ class DW_Question_Answer {
 		}
 	}
 
-	public function get_last_update() {
-		return $this->last_update;
-	}
-
-	public function go_pro( $actions, $file ) {
+	public function settings_url( $actions, $file ) {
 		$file_name = plugin_basename( __FILE__ );
+			$settings_url = admin_url('edit.php?post_type=dwqa-question&page=dwqa-settings');
 		if ( $file == $file_name ) {
-			$actions['dwqa_go_pro'] = '<a href="http://bit.ly/dwqa-pro" style="color: red; font-weight: bold">Go Pro!</a>';
-			$action = $actions['dwqa_go_pro'];
-			unset( $actions['dwqa_go_pro'] );
-			array_unshift( $actions, $action );
+			$actions['dwqa_settings'] = '<a href="'.$settings_url.'">'. __( 'Settings','be-question-answer' ) .'</a>';
 		}
-
 		return $actions;
-	}
-
-	public function plugin_rows_meta( $meta, $file ) {
-		$file_name = plugin_basename( __FILE__ );
-		if ( $file == $file_name ) {
-			$meta['extensions'] = '<a href="'.admin_url( 'edit.php?post_type=dwqa-question&page=dwqa-extensions' ).'">Extensions</a>';
-			// $meta['facebook'] = '<a href="">Facebook</a>';
-		}
-
-		return $meta;
 	}
 }
 
@@ -275,3 +227,18 @@ function dwqa() {
 $GLOBALS['dwqa'] = dwqa();
 
 endif;
+
+// 加载页面模板
+add_filter( 'page_template', 'beqa_page_template' );
+function beqa_page_template( $page_template ) {
+	if ( get_page_template_slug() == 'beqa-template.php' ) {
+		$page_template = dirname( __FILE__ ) . '/templates/beqa-template.php';
+	}
+	return $page_template;
+}
+
+add_filter( 'theme_page_templates', 'beqa_add_template_select', 10, 4 );
+function beqa_add_template_select( $post_templates, $wp_theme, $post, $post_type ) {
+	$post_templates['beqa-template.php'] = __( '问答系统' );
+	return $post_templates;
+}

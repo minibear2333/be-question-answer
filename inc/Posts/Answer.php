@@ -1,12 +1,5 @@
 <?php
-/**
- * @since 1.3.5
- */
-/**
- * Return number of answer for a question
- * @param  int $question_id Question ID ( if null get ID of current post )
- * @return int      Number of answer
- */
+
 function dwqa_question_answers_count( $question_id = null ) {
 	global $wpdb;
 
@@ -204,9 +197,9 @@ class DWQA_Posts_Answer extends DWQA_Posts_Base {
 
 	public function __construct() {
 		parent::__construct( 'dwqa-answer', array(
-			'plural' => __( 'Answers', 'dw-question-answer' ),
-			'singular' => __( 'Answer', 'dw-question-answer' ),
-			'menu' => __( 'Answers', 'dw-question-answer' ),
+			'plural' => __( '答案', 'be-question-answer' ),
+			'singular' => __( '问题', 'be-question-answer' ),
+			'menu' => __( '答案', 'be-question-answer' ),
 		) );
 
 
@@ -249,10 +242,10 @@ class DWQA_Posts_Answer extends DWQA_Posts_Base {
 		if ( isset( $_GET['post_type'] ) && sanitize_text_field( $_GET['post_type'] ) == $this->get_slug() ) {
 			$defaults = array(
 				'cb'            => '<input type="checkbox">',
-				'info'          => __( 'Answer', 'dw-question-answer' ),
-				'author'        => __( 'Author', 'dw-question-answer' ),
+				'info'          => __( 'Answer', 'be-question-answer' ),
+				'author'        => __( 'Author', 'be-question-answer' ),
 				'comment'       => '<span><span class="vers"><div title="Comments" class="comment-grey-bubble"></div></span></span>',
-				'dwqa-question' => __( 'In Response To', 'dw-question-answer' ),
+				'dwqa-question' => __( 'In Response To', 'be-question-answer' ),
 			);
 		}
 		return $defaults;
@@ -296,17 +289,17 @@ class DWQA_Posts_Answer extends DWQA_Posts_Base {
 			case 'info':
 				//Build row actions
 				$actions = array(
-					'edit'      => sprintf( '<a href="%s">%s</a>', get_edit_post_link( $post_ID ), __( 'Edit', 'edd-dw-membersip' ) ),
-					'delete'    => sprintf( '<a href="%s">%s</a>', get_delete_post_link( $post_ID ), __( 'Delete', 'edd-dw-membersip' ) ),
-					'view'      => sprintf( '<a href="%s">%s</a>', get_permalink( $post_ID ), __( 'View', 'edd-dw-membersip' ) )
+					'edit'      => sprintf( '<a href="%s">%s</a>', get_edit_post_link( $post_ID ), __( '编辑', 'edd-dw-membersip' ) ),
+					'delete'    => sprintf( '<a href="%s">%s</a>', get_delete_post_link( $post_ID ), __( '删除', 'edd-dw-membersip' ) ),
+					'view'      => sprintf( '<a href="%s">%s</a>', get_permalink( $post_ID ), __( '查看', 'edd-dw-membersip' ) )
 				);
 				printf(
 					'%s %s <a href="%s">%s %s</a> <br /> %s %s',
-					__( 'Submitted', 'dw-question-answer' ),
-					__( 'on', 'dw-question-answer' ),
+					__( 'Submitted', 'be-question-answer' ),
+					__( 'on', 'be-question-answer' ),
 					get_permalink(),
-					date( 'M d Y', get_post_time( 'U', true, $answer ) ),
-					( time() - get_post_time( 'U', true, $answer ) ) > 60 * 60 * 24 * 2 ? '' : ' at ' . human_time_diff( get_post_time( 'U', true, $answer ) ) . ' ago',
+					date( 'Y年m月d日 ', get_post_time( 'U', true, $answer ) ),
+					( time() - get_post_time( 'U', true, $answer ) ) > 60 * 60 * 24 * 2 ? '' : ' ' . human_time_diff( get_post_time( 'U', true, $answer ) ) . '前',
 					substr( get_the_content(), 0 , 140 ) . ' ...',
 					$this->row_actions( $actions )
 				);
@@ -338,7 +331,7 @@ class DWQA_Posts_Answer extends DWQA_Posts_Base {
 	public function question_metabox() {
 		add_meta_box(
 			'dwqa-answer-question-metabox',
-			__( 'Question ID', 'dw-question-answer' ),
+			__( 'Question ID', 'be-question-answer' ),
 			array( $this, 'question_metabox_output' ),
 			'dwqa-answer',
 			'side'
@@ -349,10 +342,10 @@ class DWQA_Posts_Answer extends DWQA_Posts_Base {
 		$question = $post->post_parent ? $post->post_parent : 0;
 		?>
 		<p>
-			<strong><?php _e( 'ID', 'dw-question-answer' ) ?></strong>
+			<strong><?php _e( 'ID', 'be-question-answer' ) ?></strong>
 		</p>
 		<p>
-			<label class="screen-reader-text"><?php _e( 'ID', 'dw-question-answer' ) ?></label>
+			<label class="screen-reader-text"><?php _e( 'ID', 'be-question-answer' ) ?></label>
 			<input name="_question" type="text" size="4" id="_question" value="<?php echo (int) $question ?>">
 		</p>
 		<?php

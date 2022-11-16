@@ -1,12 +1,3 @@
-<?php
-/**
- * The template for displaying comments form
- *
- * @package DW Question & Answer
- * @since DW Question & Answer 1.4.3
- */
-?>
-
 <?php if ( comments_open() ) : ?>
 <div class="dwqa-comments">
 	<?php do_action( 'dwqa_before_comments' ) ?>

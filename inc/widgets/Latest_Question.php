@@ -1,20 +1,15 @@
 <?php
 
 class DWQA_Widgets_Latest_Question extends WP_Widget {
-	/**
-	 * Constructor
-	 *
-	 * @return void
-	 **/
 	function __construct() {
-		$widget_ops = array( 'classname' => 'dwqa-widget dwqa-latest-questions', 'description' => __( 'Show a list of latest questions.', 'dw-question-answer' ) );
-		parent::__construct( 'dwqa-latest-question', __( 'DWQA Latest Questions', 'dw-question-answer' ), $widget_ops );
+		$widget_ops = array( 'classname' => 'dwqa-widget dwqa-latest-questions', 'description' => __( '显示最新问题列表。', 'be-question-answer' ) );
+		parent::__construct( 'dwqa-latest-question', __( '最新问题', 'be-question-answer' ), $widget_ops );
 	}
 
 	function widget( $args, $instance ) {
 		extract( $args, EXTR_SKIP );
 		$instance = wp_parse_args( $instance, array( 
-			'title' => __( 'Latest Questions' , 'dw-question-answer' ),
+			'title' => __( '最新问题' , 'be-question-answer' ),
 			'number' => 5,
 		) );
 		
@@ -36,13 +31,13 @@ class DWQA_Widgets_Latest_Question extends WP_Widget {
 			echo '<ul>';
 			while ( $questions->have_posts() ) { $questions->the_post( );
 				echo '<li>';
+				echo get_the_author_link();
+				if ( isset( $instance['question_date'] ) && $instance['question_date'] ) {
+					echo '' . sprintf( esc_html__( '%s 前', 'be-question-answer' ), human_time_diff( get_post_time('U', true, get_the_ID() ) ) ) . ' ';
+				}
 				echo '<a href="'. get_permalink() .'" class="question-title">';
 				the_title();
 				echo '</a>';
-				echo ' '.__( 'asked by', 'dw-question-answer' ) . ' ' . get_the_author_link();
-				if ( isset( $instance['question_date'] ) && $instance['question_date'] ) {
-					echo ', ' . sprintf( esc_html__( '%s ago', 'dw-question-answer' ), human_time_diff( get_post_time('U', true, get_the_ID() ) ) ) . '.';
-				}
 				echo '</li>';
 			}   
 			echo '</ul>';
@@ -68,15 +63,15 @@ class DWQA_Widgets_Latest_Question extends WP_Widget {
 		) );
 
 		?>
-		<p><label for="<?php echo $this->get_field_id( 'title' ) ?>"><?php _e( 'Widget title', 'dw-question-answer' ) ?></label>
+		<p><label for="<?php echo $this->get_field_id( 'title' ) ?>">标题</label>
 		<input type="text" name="<?php echo $this->get_field_name( 'title' ) ?>" id="<?php echo $this->get_field_id( 'title' ) ?>" value="<?php echo $instance['title'] ?>" class="widefat">
 		</p>
-		<p><label for="<?php echo $this->get_field_id( 'number' ) ?>"><?php _e( 'Number of posts', 'dw-question-answer' ) ?></label>
+		<p><label for="<?php echo $this->get_field_id( 'number' ) ?>"><?php _e( 'Number of posts', 'be-question-answer' ) ?></label>
 		<input type="text" name="<?php echo $this->get_field_name( 'number' ) ?>" id="<?php echo $this->get_field_id( 'number' ) ?>" value="<?php echo $instance['number'] ?>" class="widefat">
 		</p>
 		<p>
 			<input type="checkbox" name="<?php echo $this->get_field_name( 'question_date' ) ?>" id="<?php echo $this->get_field_id( 'question_date' ) ?>" <?php checked( 'on', $instance['question_date'] ) ?> class="widefat">
-			<label for="<?php echo $this->get_field_id( 'question_date' ) ?>"><?php _e( 'Show question date', 'dw-question-answer' ) ?></label>
+			<label for="<?php echo $this->get_field_id( 'question_date' ) ?>"><?php _e( 'Show question date', 'be-question-answer' ) ?></label>
 		</p>
 		<?php
 	}

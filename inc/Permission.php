@@ -291,26 +291,15 @@ class DWQA_Permission {
 			if ( $role_name == 'anonymous' ) {
 				continue;
 			}
-			
 			$role = get_role( $role_name );
-
 			foreach ( $perm['question'] as $key => $value ) {
-				$cap = 'dwqa_can_'.$key.'_question';
-				if(isset($role->capabilities[$cap])){
-					$role->remove_cap( $cap );
-				}
+				$role->remove_cap( 'dwqa_can_'.$key.'_question' );
 			}
 			foreach ( $perm['answer'] as $key => $value ) {
-				$cap = 'dwqa_can_'.$key.'_answer';
-				if(isset($role->capabilities[$cap])){
-					$role->remove_cap( $cap );
-				}
+				$role->remove_cap( 'dwqa_can_'.$key.'_answer' );
 			}
 			foreach ( $perm['comment'] as $key => $value ) {
-				$cap = 'dwqa_can_'.$key.'_comment';
-				if(isset($role->capabilities[$cap])){
-					$role->remove_cap( $cap );
-				}
+				$role->remove_cap( 'dwqa_can_'.$key.'_comment' );
 			}
 		}
 	}
@@ -336,7 +325,7 @@ class DWQA_Permission {
 	public function reset_permission_default() {
 		global $dwqa;
 		if ( ! isset( $_POST['nonce'] ) || ! wp_verify_nonce( sanitize_text_field( $_POST['nonce'] ), '_dwqa_reset_permission' ) ) {
-			wp_send_json_error( array( 'message' => __( 'Are you cheating huh?', 'dw-question-answer' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Are you cheating huh?', 'be-question-answer' ) ) );
 		}
 		if ( isset( $_POST['type'] ) ) {
 			$old = $dwqa->permission->perms;

@@ -1,4 +1,4 @@
-<?php  
+<?php 
 
 function dwqa_init_tinymce_editor( $args = array() ) {
 	global $dwqa;

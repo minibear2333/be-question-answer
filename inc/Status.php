@@ -1,7 +1,5 @@
-<?php  
-/**
- * Control all status 
- */
+<?php 
+
 function dwqa_question_print_status( $question_id = false, $echo = true ) {
 	if ( !dwqa_is_enable_status() ) {
 		return;
@@ -22,7 +20,7 @@ function dwqa_question_print_status( $question_id = false, $echo = true ) {
 	}
 
 	if ( $status ) {
-		$return = '<span title="'.__( ucwords( $status ), 'dw-question-answer' ).'" class="dwqa-status dwqa-status-'.strtolower( $status ).'">'.__( ucwords( $status ), 'dw-question-answer' ).'</span>';
+		$return = '<span title="'.__( ucwords( $status ), 'be-question-answer' ).'" class="dwqa-status dwqa-status-'.strtolower( $status ).'">'.__( ucwords( $status ), 'be-question-answer' ).'</span>';
 		if ( $echo ) {
 			echo $return;
 			return;
@@ -279,27 +277,27 @@ function dwqa_question_get_status_name( $status ) {
 	$status = strtolower( $status );  
 	switch ( $status ) {
 		case 'resolved':
-			$message = __( 'Resolved', 'dw-question-answer' );
+			$message = __( 'Resolved', 'be-question-answer' );
 			break;
 		case 'pending':
-			$message = __( 'Pending', 'dw-question-answer' );
+			$message = __( 'Pending', 'be-question-answer' );
 			break;
 		case 're-open':
-			$message = __( 'Re-Open', 'dw-question-answer' );
+			$message = __( 'Re-Open', 'be-question-answer' );
 			break;
 		case 'closed':
-			$message = __( 'Closed', 'dw-question-answer' );
+			$message = __( 'Closed', 'be-question-answer' );
 			break;
 		case 'new':
-			$message = __( 'New', 'dw-question-answer' );
+			$message = __( 'New', 'be-question-answer' );
 			break;
 
 		case 'answered':
-			$message = __( 'Answered', 'dw-question-answer' );
+			$message = __( 'Answered', 'be-question-answer' );
 			break;
 		
 		default:
-			$message = __( 'Open', 'dw-question-answer' );
+			$message = __( 'Open', 'be-question-answer' );
 			break;
 	}
 	return $message;
@@ -314,12 +312,12 @@ class DWQA_Status {
 
 	public function update_privacy() {
 		if ( ! isset( $_POST['nonce'] ) ) {
-			wp_send_json_error( array( 'message' => __( 'Are you cheating huh?', 'dw-question-answer' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Are you cheating huh?', 'be-question-answer' ) ) );
 		}
 		check_ajax_referer( '_dwqa_update_privacy_nonce', 'nonce' );
 
 		if ( ! isset( $_POST['post'] ) ) {
-			wp_send_json_error( array( 'message' => __( 'Missing post ID', 'dw-question-answer' ) ) );
+			wp_send_json_error( array( 'message' => __( 'Missing post ID', 'be-question-answer' ) ) );
 		}
 
 		global $current_user;
@@ -332,17 +330,17 @@ class DWQA_Status {
 					wp_send_json_success( array( 'ID' => $update ) );
 				} else {
 					wp_send_json_error(  array(
-						'message'   => __( 'Post does not exist','dw-question-answer' )
+						'message'   => __( 'Post does not exist','be-question-answer' )
 					) );
 				}
 			} else {
 				wp_send_json_error( array(
-					'message'   => __( 'Invalid post status','dw-question-answer' )
+					'message'   => __( 'Invalid post status','be-question-answer' )
 				) );
 			}
 		} else {
 			wp_send_json_error( array(
-				'message'   => __( 'You do not have permission to edit question', 'dw-question-answer' )
+				'message'   => __( 'You do not have permission to edit question', 'be-question-answer' )
 			) );
 		}	
 	}

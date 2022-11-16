@@ -1,7 +1,4 @@
 <?php
-/**
- *  DW Question Answer Shortcode
- */
 class DWQA_Shortcode {
 	private $shortcodes = array(
 		'dwqa-list-questions',
@@ -14,11 +11,6 @@ class DWQA_Shortcode {
 
 	public function __construct() {
 		if ( ! defined( 'DWQA_DIR' ) ) {
-			return false;
-		}
-
-		if(is_admin()){
-			//only use on frontend
 			return false;
 		}
 		
@@ -119,7 +111,7 @@ class DWQA_Shortcode {
 	public function shortcode_popular_questions( $atts ){
 		extract( shortcode_atts( array(
 			'number' => 5,
-			'title' => __( 'Popular Questions', 'dw-question-answer' ),
+			'title' => __( 'Popular Questions', 'be-question-answer' ),
 		), $atts ) );
 
 		$args = array(
@@ -142,7 +134,7 @@ class DWQA_Shortcode {
 			$html .= '<div class="dwqa-popular-questions">';
 			$html .= '<ul>';
 			while ( $questions->have_posts() ) { $questions->the_post();
-				$html .= '<li><a href="'.get_permalink().'" class="question-title">'.get_the_title().'</a> '.__( 'asked by', 'dw-question-answer' ).' ' . get_the_author_link() . '</li>';
+				$html .= '<li><a href="'.get_permalink().'" class="question-title">'.get_the_title().'</a> '.__( 'asked by', 'be-question-answer' ).' ' . get_the_author_link() . '</li>';
 			}   
 			$html .= '</ul>';
 			$html .= '</div>';
@@ -156,7 +148,7 @@ class DWQA_Shortcode {
 
 		extract( shortcode_atts( array(
 			'number' => 5,
-			'title' => __( 'Latest Answers', 'dw-question-answer' )
+			'title' => __( 'Latest Answers', 'be-question-answer' )
 		), $atts ) );
 
 		$args = array(
@@ -182,7 +174,7 @@ class DWQA_Shortcode {
 					continue;
 				}
 				if ( $question_id ) {
-					$html .= '<li>'.__( 'Answer at', 'dw-question-answer' ).' <a href="'.get_permalink( $question_id ).'#answer-'.$answer_id.'" title="'.__( 'Link to', 'dw-question-answer' ).' '.get_the_title( $question_id ).'">'.get_the_title( $question_id ).'</a></li>';
+					$html .= '<li>'.__( 'Answer at', 'be-question-answer' ).' <a href="'.get_permalink( $question_id ).'#answer-'.$answer_id.'" title="'.__( 'Link to', 'be-question-answer' ).' '.get_the_title( $question_id ).'">'.get_the_title( $question_id ).'</a></li>';
 				}
 			}   
 			$html .= '</ul>';
@@ -210,7 +202,7 @@ class DWQA_Shortcode {
 			echo '<div class="question-followers">';
 			echo $before_title;
 			$count = count( $followers );
-			printf( _n( '%d person who is following this question', '%d people who are following this question', $count,  'dw-question-answer' ),  $count );
+			printf( _n( '%d person who is following this question', '%d people who are following this question', $count,  'be-question-answer' ),  $count );
 			echo $after_title;
 
 			foreach ( $followers as $follower ) :
@@ -240,7 +232,7 @@ class DWQA_Shortcode {
 		extract( shortcode_atts( array(
 			'categories' 	=> '',
 			'number' 		=> '',
-			'title' 		=> __( 'Question List', 'dw-question-answer' ),
+			'title' 		=> __( 'Question List', 'be-question-answer' ),
 			'orderby' 		=> 'modified',
 			'order' 		=> 'DESC'
 		), $atts ) );

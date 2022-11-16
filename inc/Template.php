@@ -1,71 +1,4 @@
 <?php
-
-/**
- * Print class for question detail container
- */
-function dwqa_breadcrumb() {
-	$wpseo_internallinks = get_option('wpseo_internallinks');
-	if ( function_exists( 'yoast_breadcrumb' ) && $wpseo_internallinks['breadcrumbs-enable'] === true) :
-		yoast_breadcrumb( '<div class="breadcrumbs dwqa-breadcrumbs">', '</div>' );
-	else:
-		global $dwqa_general_settings;
-		$title  = get_the_title( $dwqa_general_settings['pages']['archive-question'] );
-		$search = isset( $_GET['qs'] ) ? esc_html( $_GET['qs'] ) : false;
-		$author = isset( $_GET['user'] ) ? esc_html( $_GET['user'] ) : false;
-		$output = '';
-		if ( ! is_singular( 'dwqa-question' ) ) {
-			$term     = get_query_var( 'dwqa-question_category' ) ? get_query_var( 'dwqa-question_category' ) : ( get_query_var( 'dwqa-question_tag' ) ? get_query_var( 'dwqa-question_tag' ) : false );
-			$term     = get_term_by( 'slug', $term, get_query_var( 'taxonomy' ) );
-			$tax_name = 'dwqa-question_tag' == get_query_var( 'taxonomy' ) ? __( 'Tag', 'dw-question-answer' ) : __( 'Category', 'dw-question-answer' );
-		} else {
-			$term = wp_get_post_terms( get_the_ID(), 'dwqa-question_category' );
-			if ( $term ) {
-				$term     = $term[0];
-				$tax_name = __( 'Category', 'dw-question-answer' );
-			}
-		}
-		if ( is_singular( 'dwqa-question' ) || $search || $author || $term ) {
-			$output .= '<div class="dwqa-breadcrumbs">';
-		}
-		if ( $term || is_singular( 'dwqa-question' ) || $search || $author ) {
-			$output .= '<a href="' . get_permalink( $dwqa_general_settings['pages']['archive-question'] ) . '">' . $title . '</a>';
-		}
-		if ( $term ) {
-			$output .= '<span class="dwqa-sep"> &rsaquo; </span>';
-			if ( is_singular( 'dwqa-question' ) ) {
-				$output .= '<a href="' . esc_url( get_term_link( $term, get_query_var( 'taxonomy' ) ) ) . '">' . $tax_name . ': ' . $term->name . '</a>';
-			} else {
-				$output .= '<span class="dwqa-current">' . $tax_name . ': ' . $term->name . '</span>';
-			}
-		}
-		if ( $search ) {
-			$output .= '<span class="dwqa-sep"> &rsaquo; </span>';
-			$output .= sprintf( '<span class="dwqa-current">%s "%s"</span>', __( 'Showing search results for', 'dw-question-answer' ), htmlspecialchars( $search ) );
-		}
-		if ( $author ) {
-			$output .= '<span class="dwqa-sep"> &rsaquo; </span>';
-			$output .= sprintf( '<span class="dwqa-current">%s "%s"</span>', __( 'Author', 'dw-question-answer' ), htmlspecialchars( $author ) );
-		}
-		if ( is_singular( 'dwqa-question' ) ) {
-			$output .= '<span class="dwqa-sep"> &rsaquo; </span>';
-			if ( ! dwqa_is_edit() ) {
-				$output .= '<span class="dwqa-current">' . get_the_title() . '</span>';
-			} else {
-				$output .= '<a href="' . get_permalink() . '">' . get_the_title() . '</a>';
-				$output .= '<span class="dwqa-sep"> &rsaquo; </span>';
-				$output .= '<span class="dwqa-current">' . __( 'Edit', 'dw-question-answer' ) . '</span>';
-			}
-		}
-		if ( is_singular( 'dwqa-question' ) || $search || $author || $term ) {
-			$output .= '</div>';
-		}
-		echo apply_filters( 'dwqa_breadcrumb', $output );
-	endif;
-	
-}
-add_action( 'dwqa_before_questions_archive', 'dwqa_breadcrumb' );
-add_action( 'dwqa_before_single_question', 'dwqa_breadcrumb' );
-
 function dwqa_archive_question_filter_layout() {
 	dwqa_load_template( 'archive', 'question-filter' );
 }
@@ -74,7 +7,7 @@ add_action( 'dwqa_before_questions_archive', 'dwqa_archive_question_filter_layou
 function dwqa_search_form() {
 	?>
 	<form id="dwqa-search" class="dwqa-search">
-		<input data-nonce="<?php echo wp_create_nonce( '_dwqa_filter_nonce' ) ?>" type="text" placeholder="<?php _e( 'What do you want to know?', 'dw-question-answer' ); ?>" name="qs" value="<?php echo isset( $_GET['qs'] ) ? esc_html( $_GET['qs'] ) : '' ?>">
+		<input class="dah bk" data-nonce="<?php echo wp_create_nonce( '_dwqa_filter_nonce' ) ?>" type="text" placeholder="<?php _e( 'What do you want to know?', 'be-question-answer' ); ?>" name="qs" value="<?php echo isset( $_GET['qs'] ) ? esc_html( $_GET['qs'] ) : '' ?>">
 	</form>
 	<?php
 }
@@ -157,18 +90,21 @@ function dwqa_question_button_action() {
 	$html = '';
 	if ( is_user_logged_in() ) {
 		$followed = dwqa_is_followed() ? 'followed' : 'follow';
-		$text = __( 'Subscribe', 'dw-question-answer' );
-		$html .= '<label for="dwqa-favorites">';
+		$text = __( 'Subscribe', 'be-question-answer' );
+		$html .= '<span class="rememberme pretty success">';
 		$html .= '<input type="checkbox" id="dwqa-favorites" data-post="'. get_the_ID() .'" data-nonce="'. wp_create_nonce( '_dwqa_follow_question' ) .'" value="'. $followed .'" '. checked( $followed, 'followed', false ) .'/>';
-		$html .= '<span>' . $text . '</span>';
+		$html .= '<label for="dwqa-favorites">';
+		$html .= '<i class="mdi" data-icon=""></i>';
+		$html .= '<span class="dwqa-favorites-txt">' . $text . '</span>';
 		$html .= '</label>';
+		$html .= '</span>';
 		if ( dwqa_current_user_can( 'edit_question' ) ) {
-			$html .= '<a class="dwqa_edit_question" href="'. add_query_arg( array( 'edit' => get_the_ID() ), get_permalink() ) .'">' . __( 'Edit', 'dw-question-answer' ) . '</a> ';
+			$html .= '<a class="dwqa_edit_question" href="'. add_query_arg( array( 'edit' => get_the_ID() ), get_permalink() ) .'">' . __( 'Edit', 'be-question-answer' ) . '</a> ';
 		}
 
 		if ( dwqa_current_user_can( 'delete_question' ) ) {
 			$action_url = add_query_arg( array( 'action' => 'dwqa_delete_question', 'question_id' => get_the_ID() ), admin_url( 'admin-ajax.php' ) );
-			$html .= '<a class="dwqa_delete_question" href="'. wp_nonce_url( $action_url, '_dwqa_action_remove_question_nonce' ) .'">' . __( 'Delete', 'dw-question-answer' ) . '</a> ';
+			$html .= '<a class="dwqa_delete_question" href="'. wp_nonce_url( $action_url, '_dwqa_action_remove_question_nonce' ) .'">' . __( 'Delete', 'be-question-answer' ) . '</a> ';
 		}
 	}
 
@@ -180,12 +116,12 @@ function dwqa_answer_button_action() {
 	if ( is_user_logged_in() ) {
 		if ( dwqa_current_user_can( 'edit_answer' ) ) {
 			$parent_id = dwqa_get_question_from_answer_id();
-			$html .= '<a class="dwqa_edit_question" href="'. add_query_arg( array( 'edit' => get_the_ID() ), get_permalink( $parent_id ) ) .'">' . __( 'Edit', 'dw-question-answer' ) . '</a> ';
+			$html .= '<a class="dwqa_edit_question" href="'. add_query_arg( array( 'edit' => get_the_ID() ), get_permalink( $parent_id ) ) .'">' . __( 'Edit', 'be-question-answer' ) . '</a> ';
 		}
 
 		if ( dwqa_current_user_can( 'delete_answer' ) ) {
 			$action_url = add_query_arg( array( 'action' => 'dwqa_delete_answer', 'answer_id' => get_the_ID() ), admin_url( 'admin-ajax.php' ) );
-			$html .= '<a class="dwqa_delete_answer" href="'. wp_nonce_url( $action_url, '_dwqa_action_remove_answer_nonce' ) .'">' . __( 'Delete', 'dw-question-answer' ) . '</a> ';
+			$html .= '<a class="dwqa_delete_answer" href="'. wp_nonce_url( $action_url, '_dwqa_action_remove_answer_nonce' ) .'">' . __( 'Delete', 'be-question-answer' ) . '</a> ';
 		}
 	}
 
@@ -304,11 +240,10 @@ function dwqa_enqueue_scripts(){
         wp_enqueue_script( 'jquery-effects-core' );
         wp_enqueue_script( 'jquery-effects-highlight' );
     }
-    $script_version = $dwqa->get_last_update();
+    $script_version = '1.0';
 
     // Enqueue style
     wp_enqueue_style( 'dwqa-style', $assets_folder . 'css/style.css', array(), $script_version );
-    wp_enqueue_style( 'dwqa-rtl', $assets_folder . 'css/rtl.css', array(), $script_version );
     // Enqueue for single question page
     if( is_single() && 'dwqa-question' == get_post_type() ) {
         // js
@@ -342,93 +277,6 @@ function dwqa_enqueue_scripts(){
 }
 add_action( 'wp_enqueue_scripts', 'dwqa_enqueue_scripts' );
 
-add_action( 'wp_footer', 'dwqa_wp_footer' );
-function dwqa_wp_footer() {
-	global $dwqa_general_settings;
-
-	if ( isset( $dwqa_general_settings['show-status-icon'] ) && $dwqa_general_settings['show-status-icon'] && dwqa_is_enable_status() ) {
-		?>
-		<style type="text/css">
-			@import url('https://maxcdn.bootstrapcdn.com/font-awesome/4.5.0/css/font-awesome.min.css');
-
-			.dwqa-questions-list .dwqa-question-item {
-				padding-left: 70px;
-			}
-
-			.dwqa-questions-list .dwqa-question-item .avatar {
-				position: static;
-				width: 12px;
-				height: 12px;
-				margin-right: 5px;
-				margin-top: 0;
-				display: inline-block;
-			}
-
-			.dwqa-question-item .dwqa-status {
-				position: absolute;
-				left: 15px;
-				top: 50%;
-				width: 36px;
-				height: 36px;
-				margin-top: -18px;
-				border-radius: 36px;
-				text-indent: -9999px;
-				padding: 0;
-				background: none;
-				box-shadow: 0 0 0 1px #e67e22 inset;
-			}
-
-			.dwqa-question-item .dwqa-status:after {
-				content: "\f128";
-				display: block;
-				font: normal normal normal 14px/1 FontAwesome;
-				font-size: inherit;
-				text-rendering: auto;
-				-webkit-font-smoothing: antialiased;
-				-moz-osx-font-smoothing: grayscale;
-
-				color: #e67e22;
-				text-indent: 0;
-				font-size: 18px;
-				width: 36px;
-				height: 36px;
-				line-height: 36px;
-				text-align: center;
-				top: 0;
-				position: absolute;
-			}
-
-			.dwqa-question-item .dwqa-status-closed {
-				box-shadow: 0 0 0 1px #666 inset;
-			}
-
-			.dwqa-question-item .dwqa-status-closed:after {
-				color: #666;
-				content: "\f023";
-			}
-
-			.dwqa-question-item .dwqa-status-resolved {
-				box-shadow: 0 0 0 1px #578824 inset;
-			}
-
-			.dwqa-question-item .dwqa-status-resolved:after {
-				color: #578824;
-				content: "\f00c";
-			}
-
-			.dwqa-question-item .dwqa-status-answered {
-				box-shadow: 0 0 0 1px #1ba1e2 inset;
-			}
-
-			.dwqa-question-item .dwqa-status-answered:after {
-				color: #1ba1e2;
-				content: "\f112";
-				font-size: 14px;
-			}
-		</style>
-		<?php
-	}
-}
 
 function dwqa_comment_form( $args = array(), $post_id = null ) {
 	if ( null === $post_id )
@@ -445,9 +293,9 @@ function dwqa_comment_form( $args = array(), $post_id = null ) {
 	$aria_req = ( $req ? " aria-required='true'" : '' );
 	$html5    = 'html5' === $args['format'];
 	$fields   = array(
-		'email'  => '<p class="comment-form-email"><label for="email">' . __( 'Email', 'dw-question-answer' ) . ( $req ? ' <span class="required">*</span>' : '' ) . '</label> ' .
-					'<input id="email-'.$post_id.'" name="email" ' . ( $html5 ? 'type="email"' : 'type="text"' ) . ' value="' . esc_attr(  $commenter['comment_author_email'] ) . '" size="30"' . $aria_req . ' /></p>',
-		'author'  => '<p class="comment-form-name"><label for="name">' . __( 'Name', 'dw-question-answer' ) . ( $req ? ' <span class="required">*</span>' : '' ) . '</label>' . '<input id="name-' .$post_id.'" name="name" type="text" value="" size="30"/></p>'
+		'email'  => '<p class="comment-form-email"><label for="email">' . __( 'Email', 'be-question-answer' ) . ( $req ? ' <span class="required">*</span>' : '' ) . '</label> ' .
+					'<input id="email-'.$post_id.'" class="be-anonymous-email" name="email" ' . ( $html5 ? 'type="email"' : 'type="text"' ) . ' value="' . esc_attr(  $commenter['comment_author_email'] ) . '" size="30"' . $aria_req . ' /></p>',
+		'author'  => '<p class="comment-form-name"><label for="name">' . __( 'Name', 'be-question-answer' ) . ( $req ? ' <span class="required">*</span>' : '' ) . '</label>' . '<input id="name-' .$post_id.'" class="be-anonymous-name" name="name" type="text" value="" size="30"/></p>'
 	);
 	$required_text = sprintf( ' ' . __( 'Required fields are marked %s' ), '<span class="required">*</span>' );
 	/**
@@ -461,16 +309,16 @@ function dwqa_comment_form( $args = array(), $post_id = null ) {
 	$defaults = array(
 		'fields'               => $fields,
 		'comment_field'        => '',
-		'must_log_in'          => '<p class="must-log-in">' . sprintf( __( 'You must be <a href="%s">logged in</a> to post a comment.','dw-question-answer' ), wp_login_url( apply_filters( 'the_permalink', get_permalink( $post_id ) ) ) ) . '</p>',
-		'logged_in_as'         => '<p class="comment-form-comment"><textarea id="comment" name="comment" placeholder="Comment" rows="2" aria-required="true"></textarea></p>',
-		'comment_notes_before' => '<p class="comment-form-comment"><textarea id="comment" name="comment" placeholder="Comment" rows="2" aria-required="true"></textarea></p>',
-		'comment_notes_after'  => '<p class="form-allowed-tags">' . sprintf( __( 'You may use these <abbr title="HyperText Markup Language">HTML</abbr> tags and attributes: %s','dw-question-answer' ), ' <code>' . allowed_tags() . '</code>' ) . '</p>',
+		'must_log_in'          => '<p class="must-log-in">' . sprintf( __( 'You must be <a href="%s">logged in</a> to post a comment.','be-question-answer' ), wp_login_url( apply_filters( 'the_permalink', get_permalink( $post_id ) ) ) ) . '</p>',
+		'logged_in_as'         => '<p class="comment-form-comment"><textarea id="comment" name="comment" placeholder="' . sprintf( __( 'Comment', 'be-question-answer' )) . '" rows="2" aria-required="true"></textarea></p>',
+		'comment_notes_before' => '<p class="comment-form-comment"><textarea id="comment" name="comment" placeholder="' . sprintf( __( 'Comment', 'be-question-answer' )) . '" rows="2" aria-required="true"></textarea></p>',
+		'comment_notes_after'  => '<p class="form-allowed-tags">' . sprintf( __( 'You may use these <abbr title="HyperText Markup Language">HTML</abbr> tags and attributes: %s','be-question-answer' ), ' <code>' . allowed_tags() . '</code>' ) . '</p>',
 		'id_form'              => 'commentform',
 		'id_submit'            => 'submit',
-		'title_reply'          => __( 'Leave a Reply','dw-question-answer' ),
-		'title_reply_to'       => __( 'Leave a Reply to %s','dw-question-answer' ),
-		'cancel_reply_link'    => __( 'Cancel reply', 'dw-question-answer' ),
-		'label_submit'         => __( 'Post Comment', 'dw-question-answer' ),
+		'title_reply'          => __( 'Leave a Reply','be-question-answer' ),
+		'title_reply_to'       => __( 'Leave a Reply to %s','be-question-answer' ),
+		'cancel_reply_link'    => __( 'Cancel reply', 'be-question-answer' ),
+		'label_submit'         => __( 'Post Comment', 'be-question-answer' ),
 		'format'               => 'xhtml',
 	);
 	/**
@@ -645,7 +493,7 @@ function dwqa_is_sticky( $question_id = false ) {
 
 function dwqa_question_states( $states, $post ){
 	if ( dwqa_is_sticky( $post->ID ) && 'dwqa-question' == get_post_type( $post->ID ) ) {
-		$states[] = __( 'Sticky Question','dw-question-answer' );
+		$states[] = __( 'Sticky Question','be-question-answer' );
 	}
 	return $states;
 }
@@ -659,9 +507,9 @@ function dwqa_get_ask_question_link( $echo = true, $label = false, $class = fals
 
 
 		if ( dwqa_current_user_can( 'post_question' ) ) {
-			$label = $label ? $label : __( 'Ask a question', 'dw-question-answer' );
+			$label = $label ? $label : __( 'Ask a question', 'be-question-answer' );
 		} elseif ( ! is_user_logged_in() ) {
-			$label = $label ? $label : __( 'Login to ask a question', 'dw-question-answer' );
+			$label = $label ? $label : __( 'Login to ask a question', 'be-question-answer' );
 			$submit_question_link = wp_login_url( $submit_question_link );
 		} else {
 			return false;
@@ -821,7 +669,6 @@ class DWQA_Template {
 			ob_start();
 
 			remove_filter( 'comments_open', array( $this, 'close_default_comment' ) );
-			$this->remove_all_filters( 'the_content' );
 
 			echo '<div class="dwqa-container" >';
 			$this->load_template( 'single', 'question' );
@@ -848,8 +695,8 @@ class DWQA_Template {
 			) );
 
 			$single_template = isset( $dwqa_options['single-template'] ) ? $dwqa_options['single-template'] : false;
-			$this->restore_all_filters( 'the_content' );
-			
+
+			$this->remove_all_filters( 'the_content' );
 			add_filter( 'body_class', array( $this, 'page_template_body_class' ) );
 			return dwqa_get_template( $page_template );
 		}
@@ -1134,7 +981,7 @@ function dwqa_vote_best_answer_button() {
 	if ( $best_answer == get_the_ID() || ( is_user_logged_in() && ( $current_user->ID == $question->post_author || current_user_can( 'edit_posts' ) ) ) ) {
 		?>
 		<div class="entry-vote-best <?php echo $best_answer == get_the_ID() ? 'active' : ''; ?>" <?php echo $data ?> >
-			<a href="javascript:void( 0 );" title="<?php _e( 'Choose as the best answer','dw-question-answer' ) ?>">
+			<a href="javascript:void( 0 );" title="<?php _e( 'Choose as the best answer','be-question-answer' ) ?>">
 				<div class="entry-vote-best-bg"></div>
 				<i class="icon-thumbs-up"></i>
 			</a>

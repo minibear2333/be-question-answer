@@ -1,15 +1,5 @@
-<?php  
-
+<?php 
 class DWQA_Walker_Tag extends Walker_Category {
-	/**
-	 * @see Walker::start_el()
-	 * @since 2.1.0
-	 *
-	 * @param string $output Passed by reference. Used to append additional content.
-	 * @param object $category Category data object.
-	 * @param int $depth Depth of category in reference to parents.
-	 * @param array $args
-	 */
 	function start_el( &$output, $category, $depth = 0, $args = array(), $id = 0 ) {
 		extract( $args );
 

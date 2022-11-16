@@ -1,11 +1,4 @@
-<?php  
-/** 
- * This file was used to include all functions which i can't classify, just use those for support my work
- */
-
-/** 
- * Array
- */
+<?php 
 function dwqa_array_insert( &$array, $element, $position = null ) {
 	if ( is_array( $element ) ) {
 		$part = $element;

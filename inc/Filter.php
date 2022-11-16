@@ -1,8 +1,4 @@
-<?php  
-
-/**
- *  Inlucde all funtion for filter of dw question answer plugin
- */
+<?php 
 class DWQA_Filter {
 	public function prepare_archive_posts( $args ) {
 		global $wp_query,$dwqa_general_settings;
