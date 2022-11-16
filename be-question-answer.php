@@ -2,9 +2,9 @@
 /**
  *  Plugin Name: 问答系统
  *  Description: 用于构建一个问答系统，方便您与客户沟通。
- *  Author: DesignWall | robin
- *  Author URI: https://zmingcx.com/docs/11780.html
- *  Version: 2022.06.19
+ *  Author: minibear2333
+ *  Author URI: https://coding3min.com
+ *  Version: 2022.11.17
  */
 
 if ( !class_exists( 'DW_Question_Answer' ) ) :
