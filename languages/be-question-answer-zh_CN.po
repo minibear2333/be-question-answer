@@ -339,7 +339,7 @@ msgstr "该用户名已经注册。 请使用另一个。"
 
 #: inc/Handle.php:466
 msgid "Your question is waiting moderator."
-msgstr "您的问题是等待主持人。"
+msgstr "您的问题已提交，审核后可见"
 
 #: inc/Handle.php:488 inc/Status.php:345
 msgid "You do not have permission to edit question"

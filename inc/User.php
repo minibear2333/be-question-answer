@@ -128,7 +128,8 @@ function dwqa_is_followed( $post_id = false, $user_id = false ) {
 * @since 1.4.0
 */
 function dwqa_the_author( $display_name ) {
-	global $post;
+	// global $post;
+	$post = get_post();
 
 	if ( 'dwqa-answer' == $post->post_type || 'dwqa-question' == $post->post_type) {
 		if ( dwqa_is_anonymous( $post->ID ) ) {

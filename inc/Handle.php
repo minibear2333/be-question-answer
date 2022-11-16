@@ -257,7 +257,7 @@ class DWQA_Handle {
 			global $comment;
 			$comment = get_comment( $comment_id );
 			$client_id = isset( $_POST['clientId'] ) ? sanitize_text_field( $_POST['clientId'] ) : false;
-			do_action( 'dwqa_add_comment', $comment_id, $client_id );
+			do_action( 'dwqa_add_comment', $comment_id, $comment );
 			
 			$redirect_to = apply_filters( 'dwqa_submit_comment_success_redirect', $redirect_to, $question_id);
 			exit(wp_safe_redirect( $redirect_to ));
