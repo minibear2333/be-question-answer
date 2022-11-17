@@ -122,6 +122,7 @@ class DWQA_Handle {
 				}
 			} else {
 				if ( !dwqa_is_followed( $question_id, get_current_user_id() ) ) {
+					// 如果回答者不是提问者，插入答案时自动关注
 					add_post_meta( $question_id, '_dwqa_followers', get_current_user_id() );
 				}
 			}
@@ -579,6 +580,7 @@ class DWQA_Handle {
 			update_post_meta( $new_question, '_dwqa_views', 0 );
 			update_post_meta( $new_question, '_dwqa_votes', 0 );
 			update_post_meta( $new_question, '_dwqa_answers_count', 0 );
+			// 提问自动关注
 			add_post_meta( $new_question, '_dwqa_followers', $user_id );
 			$date = get_post_field( 'post_date', $new_question );
 			// dwqa_log_last_activity_on_question( $new_question, 'Create question', $date );

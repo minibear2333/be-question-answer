@@ -104,7 +104,7 @@ class DWQA_Notifications {
 		$site_description = get_bloginfo( 'description' );
 		$site_url = site_url();
 		$enable_send_copy = get_option( 'dwqa_subscrible_send_copy_to_admin' );
-		$admin_email = $this->get_admin_email('answer');
+		$admin_email = get_bloginfo( 'admin_email' );
 		$site_logo = get_option( 'dwqa_subscrible_email_logo', '' );
 		$site_logo = $site_logo ? '<img src="' . $site_logo . '" alt="' . get_bloginfo( 'name' ) . '" style="max-width: 100%; height: auto;" />' : '';
 
@@ -148,6 +148,42 @@ class DWQA_Notifications {
 			$user_question_avatar = get_avatar( $user_question_id, 60 );
 		}
 
+		// start send to question author
+		// 回答者和提问者不是一个人的情况下才发邮件
+		$answer_notify_for_question_enabled = get_option( 'dwqa_subscrible_enable_new_answer_notification', 1 );
+		if ( $user_question_email && $answer_notify_for_question_enabled && absint( $user_answer_id ) != absint( $user_question_id ) ) {
+			$subject = get_option( 'dwqa_subscrible_new_answer_email_subject', __( '[{site_name}] A new answer for "{question_title}" was posted on {site_name}', 'be-question-answer' ) );
+			$subject = str_replace( '{site_name}', esc_html( $site_name ), $subject );
+			$subject = str_replace( '{question_title}', $question_title, $subject );
+			$subject = str_replace( '{question_id}', absint( $question_id ), $subject );
+			$subject = str_replace( '{username}', esc_html( $user_question_display_name ), $subject );
+			$subject = str_replace( '{answer_author}', esc_html( $user_answer_display_name ), $subject );
+
+			$message = dwqa_get_mail_template( 'dwqa_subscrible_new_answer_email', 'new-answer' );
+			$message = apply_filters( 'dwqa_get_new_answer_email_to_author_message', $message, $question_id, $answer_id );
+			if ( !$message ) {
+				return false;
+			}
+
+			$message = str_replace( '{answer_avatar}', $user_answer_avatar, $message );
+			$message = str_replace( '{answer_author}', esc_html( $user_answer_display_name ), $message );
+			$message = str_replace( '{question_link}', esc_url( $question_link ), $message );
+			$message = str_replace( '{question_author}', esc_html( $user_question_display_name ), $message );
+			$message = str_replace( '{answer_link}', esc_url( $answer_link ), $message );
+			$message = str_replace( '{question_title}', $question_title, $message );
+			$message = str_replace( '{answer_content}', wp_kses_post( $answer_content ), $message );
+			$message = str_replace( '{site_logo}', $site_logo, $message );
+			$message = str_replace( '{site_name}', esc_html( $site_name ), $message );
+			$message = str_replace( '{site_description}', esc_html( $site_description ), $message );
+			$message = str_replace( '{site_url}', esc_url( $site_url ), $message );
+
+			$sender = wp_mail( $user_question_email, $subject, $message );
+			if ( $enable_send_copy ) {
+				$sender = wp_mail( $admin_email, '【抄送管理员】'.$subject, $message );
+			}	
+		}
+
+		// 发送给关注者逻辑（TODO 为什么管理员没加入到关注者列表呢？没看到这块代码）
 		// get all follower email lists
 		$followers = get_post_meta( $question_id, '_dwqa_followers' );
 		$followers_email = array();
@@ -193,53 +229,16 @@ class DWQA_Notifications {
 			$message = str_replace( '{site_name}', esc_html( $site_name ), $message );
 			$message = str_replace( '{site_description}', esc_html( $site_description ), $message );
 			$message = str_replace( '{site_url}', esc_url( $site_url ), $message );
-
+			
+			$emails = array_merge( $followers_email, $admin_email );
+			$followers_email = array_unique($followers_email);
+			$sender = wp_mail( $followers_email, $subject, $message );
 			if ( $enable_send_copy ) {
-				$followers_email = array_merge( $followers_email, $admin_email );
-			}
-
-			// make sure it is not duplicate email
-			$followers_email = array_unique( $followers_email );
-
-			$sitename = strtolower( $_SERVER['SERVER_NAME'] );
-			if ( substr( $sitename, 0, 4 ) === 'www.' ) {
-				$sitename = substr( $sitename, 4 );
-			}
-			$no_reply = 'noreply@' . $sitename;
-
-			$sender = wp_mail( $no_reply, $subject, $message );
+				$sender = wp_mail( $admin_email, '【抄送管理员】'.$subject, $message );
+			}			
 		}
 
-		// start send to question author
-		$answer_notify_for_question_enabled = get_option( 'dwqa_subscrible_enable_new_answer_notification', 1 );
-		if ( $user_question_email && $answer_notify_for_question_enabled && absint( $user_answer_id ) != absint( $user_question_id ) ) {
-			$subject = get_option( 'dwqa_subscrible_new_answer_email_subject', __( '[{site_name}] A new answer for "{question_title}" was posted on {site_name}', 'be-question-answer' ) );
-			$subject = str_replace( '{site_name}', esc_html( $site_name ), $subject );
-			$subject = str_replace( '{question_title}', $question_title, $subject );
-			$subject = str_replace( '{question_id}', absint( $question_id ), $subject );
-			$subject = str_replace( '{username}', esc_html( $user_question_display_name ), $subject );
-			$subject = str_replace( '{answer_author}', esc_html( $user_answer_display_name ), $subject );
-
-			$message = dwqa_get_mail_template( 'dwqa_subscrible_new_answer_email', 'new-answer' );
-			$message = apply_filters( 'dwqa_get_new_answer_email_to_author_message', $message, $question_id, $answer_id );
-			if ( !$message ) {
-				return false;
-			}
-
-			$message = str_replace( '{answer_avatar}', $user_answer_avatar, $message );
-			$message = str_replace( '{answer_author}', esc_html( $user_answer_display_name ), $message );
-			$message = str_replace( '{question_link}', esc_url( $question_link ), $message );
-			$message = str_replace( '{question_author}', esc_html( $user_question_display_name ), $message );
-			$message = str_replace( '{answer_link}', esc_url( $answer_link ), $message );
-			$message = str_replace( '{question_title}', $question_title, $message );
-			$message = str_replace( '{answer_content}', wp_kses_post( $answer_content ), $message );
-			$message = str_replace( '{site_logo}', $site_logo, $message );
-			$message = str_replace( '{site_name}', esc_html( $site_name ), $message );
-			$message = str_replace( '{site_description}', esc_html( $site_description ), $message );
-			$message = str_replace( '{site_url}', esc_url( $site_url ), $message );
-
-			$sender = wp_mail( $user_question_email, $subject, $message );
-		}
+		
 	}
 
 	public function new_comment_notify( $comment_id, $comment ) {
@@ -276,7 +275,7 @@ class DWQA_Notifications {
 				return false;
 			}
 		} else {
-			// if user is not the author of question/answer, add user to followers list
+			// 如果评论者不是答案和问题的作者自动添加关注
 			if ( $post_parent->post_author != $comment->user_id ) {
 				if ( ! dwqa_is_followed( $post_parent->ID, $comment->user_id ) ) {
 					add_post_meta( $post_parent->ID, '_dwqa_followers', $comment->user_id );
@@ -326,8 +325,8 @@ class DWQA_Notifications {
 		// 发送通知给父节点用户（如果提交评论的和父节点用户不是一个人）
 		if ( $post_parent->post_author != $comment->user_id ) {
 			wp_mail( $post_parent_email, $subject, $message );
-			// 抄送副本给管理员（如果管理员和父节点用户不是一个人）
-			if ( $enable_send_copy && $admin_email != $post_parent_email ) {
+			// 抄送副本给管理员
+			if ( $enable_send_copy) {
 				wp_mail( $admin_email, '【抄送管理员】'.$subject, $message );
 			}
 		}
@@ -394,7 +393,7 @@ class DWQA_Notifications {
 				}
 				$message_to_each_follower = str_replace( '{follower}', $follower_name, $message_to_follower );
 				$test = wp_mail( $follow_email, $follow_subject, $message_to_each_follower );
-				if ( $enable_send_copy && $follow_email != $admin_email ) {
+				if ( $enable_send_copy ) {
 					wp_mail( $admin_email, '【抄送管理员】'.$follow_subject, $message_to_each_follower );
 				}
 			}
