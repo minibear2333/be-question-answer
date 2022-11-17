@@ -328,7 +328,7 @@ class DWQA_Notifications {
 			wp_mail( $post_parent_email, $subject, $message );
 			// 抄送副本给管理员（如果管理员和父节点用户不是一个人）
 			if ( $enable_send_copy && $admin_email != $post_parent_email ) {
-				wp_mail( $admin_email, $subject, $message );
+				wp_mail( $admin_email, '【抄送管理员】'.$subject, $message );
 			}
 		}
 
@@ -395,7 +395,7 @@ class DWQA_Notifications {
 				$message_to_each_follower = str_replace( '{follower}', $follower_name, $message_to_follower );
 				$test = wp_mail( $follow_email, $follow_subject, $message_to_each_follower );
 				if ( $enable_send_copy && $follow_email != $admin_email ) {
-					wp_mail( $admin_email, $follow_subject, $message_to_each_follower );
+					wp_mail( $admin_email, '【抄送管理员】'.$follow_subject, $message_to_each_follower );
 				}
 			}
 		}

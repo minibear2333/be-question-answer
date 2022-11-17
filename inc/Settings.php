@@ -1333,7 +1333,7 @@ class DWQA_Settings {
 
 
 						echo '<div id="new-comment-question" class="tab-pane">';
-						echo '<h3>'.__( 'New Comment to Question Notifications (to Admin)','be-question-answer' ). '</h3>';
+						echo '<h3>'.__( '新评论通知（问题创建者）','be-question-answer' ). '</h3>';
 						echo '<table class="form-table">';
 						echo '<tr>';
 						dwqa_subscrible_enable_new_comment_question_notification();
@@ -1370,7 +1370,7 @@ class DWQA_Settings {
 
 						
 						echo '<div id="new-comment-answer" class="tab-pane">';
-						echo '<h3>'.__( 'New Comment to Answer Notifications (to Admin)','be-question-answer' ). '</h3>';
+						echo '<h3>'.__( '回复新评论通知（答案创建者）','be-question-answer' ). '</h3>';
 						echo '<table class="form-table">';
 						echo '<tr>';
 						dwqa_subscrible_enable_new_comment_answer_notification();

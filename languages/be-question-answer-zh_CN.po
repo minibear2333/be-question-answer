@@ -1144,7 +1144,7 @@ msgstr "新评论通知（关注者）"
 
 #: inc/Settings.php:1397
 msgid "New Comment to Question Notifications (to Admin)"
-msgstr "新评论通知（管理员）"
+msgstr "新评论通知（问题创建者）"
 
 #: inc/Settings.php:1417
 msgid "New Comment to Answer Notifications (to Followers)"
@@ -1152,7 +1152,7 @@ msgstr "回复新评论通知（关注者）"
 
 #: inc/Settings.php:1434
 msgid "New Comment to Answer Notifications (to Admin)"
-msgstr "回复新评论通知（管理员）"
+msgstr "回复新评论通知（答案创建者）"
 
 #: inc/Settings.php:1452
 msgid "Save all changes"
