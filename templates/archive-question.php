@@ -17,10 +17,10 @@
 		<div class="dwqa-questions-footer">
 			<?php dwqa_question_paginate_link() ?>
                         <?php if ( !is_user_logged_in() ): ?>
-                          <div class="dwqa-ask-question"><a href="https://coding3min.com/wp-login.php" >登陆后提问</a></div>
+                          <div class="dwqa-ask-question"><a href="/wp-login.php" target="_blank">登陆后提问</a></div>
                         <?php else : ?>
 			    <?php if ( dwqa_current_user_can( 'post_question' ) ) : ?>
-				<div class="dwqa-ask-question"><a href="<?php echo dwqa_get_ask_link(); ?>"><?php _e( 'Ask Question', 'be-question-answer' ); ?></a></div>
+				<div class="dwqa-ask-question"><a href="<?php echo dwqa_get_ask_link(); ?>" target="_blank"><?php _e( 'Ask Question', 'be-question-answer' ); ?></a></div>
 		    	    <?php endif; ?>
 			<?php endif; ?>
 		</div>
