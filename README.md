@@ -8,4 +8,5 @@ begin主题问答系统
 
 ## 效果
 
-![image](https://user-images.githubusercontent.com/42294819/202234372-e162208e-0a0a-48e0-9f44-b542e4658c81.png)
+![image](https://user-images.githubusercontent.com/42294819/202885652-e69d31fc-2f69-4eba-82aa-1c79ba54ae36.png)
+
