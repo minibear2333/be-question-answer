@@ -1,4 +1,4 @@
-/* 整体 */
+
 .dwqa-container {
 	font-size: 15px !important;
 }
@@ -37,7 +37,7 @@
 	text-indent: 0 !important;
 }
 
-/* 搜索 */
+
 .dwqa-search {
 	position: relative;
 	font-size: 16px;
@@ -87,7 +87,6 @@
 	margin: 0 !important;
 }
 
-/* 筛选 */
 .dwqa-question-filter a:visited,
 .dwqa-question-filter a {
 	background: #fff;
@@ -111,11 +110,25 @@
 	border: 1px solid #1ba1e2;
 }
 
+.dwqa-question-type a{
+    margin-right: 5px;
+}
+
+.dwqa-question-type a:hover {
+	color: #666;
+	border: 1px solid #a14740;
+}
+
+.dwqa-question-type a.active {
+	border: 1px solid #1ba1e2;
+}
+
+
 .dwqa-alert-info {
 	padding: 20px;
 }
 
-/* 排序 */
+
 .dwqa-sort-by {
 	background: #fff;
 	float: right;
@@ -133,7 +146,6 @@
 	clear: none;
 }
 
-/* 列表 */
 .dwqa-questions-list {
 	background: #fff;
 	float: left;
@@ -223,7 +235,6 @@
 	color: #999;
 }
 
-/* 状态图标 */
 .beqa-questions-list .dwqa-question-item {
 	padding-left: 80px;
 }
@@ -296,7 +307,6 @@
 	font-size: 14px;
 }
 
-/* 页脚 */
 .dwqa-questions-footer {
 	float: left;
 	width: 100%;
@@ -323,7 +333,6 @@
 }
 
 
-/* 翻页 */
 .dwqa-pagination {
 	margin: 0 0 20px 0;
 }
@@ -341,7 +350,6 @@
 	border: 1px solid #3690cf;
 }
 
-/* 头像 */
 .dwqa-questions-archive .dwqa-question-item .avatar {
 	position: absolute;
 	left: 40px;
@@ -391,7 +399,7 @@
 	color: #666;
 }
 
-/* 提问 */
+
 .beqa-title input {
 	background: #f1f1f1;
 	width: 100%;
@@ -497,7 +505,7 @@
 	margin: 15px 10px 15px 10px;
 }
 
-/* 正文 */
+
 .single-dwqa-question .dwqa-staff {
 	display: none;
 }
@@ -664,7 +672,7 @@ a.dwqa-pick-best-answer {
 	display: inline-block;
 }
 
-/* 评论 */
+
 .single-dwqa-question .dwqa-comments {
 	display: block;
 }
@@ -791,7 +799,7 @@ a.dwqa-pick-best-answer {
 	text-transform: capitalize;
 }
 
-/* 点赞 */
+
 .dwqa-answer-vote {
 }
 
@@ -835,7 +843,6 @@ a.dwqa-vote-down {
 	display: inline-block;
 }
 
-/* 编辑 */
 .be-question-category-edit {
 	margin: 20px 0 0 0;
 }
